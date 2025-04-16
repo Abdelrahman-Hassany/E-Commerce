@@ -25,15 +25,6 @@ def store(request):
     return render(request,'store/store.html',context)
 
 def cart(request):
-    cart_cookie = json.loads(request.COOKIES.get('cart', '{}'))
-
-    if request.user.is_authenticated and cart_cookie and not request.session.get('cart_merged'):
-        merge_cookie_cart_to_user_cart(request)
-        request.session['cart_merged'] = True
-        context = cartData(request)
-        response = render(request,'store/cart.html', context)
-        response.delete_cookie('cart')
-        return response
 
     data = cartData(request)
     items = data['items']
