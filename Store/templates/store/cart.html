@@ -32,7 +32,7 @@
                 <button class="btn btn-sm btn-outline-secondary update-cart" data-product="{{ item.product.id }}" data-action="add">+</button>
               </div>
             </td>
-            <td>${{ item.total_price }}</td>
+            <td id="total_product_price_{{ item.product.id }}">${{ item.total_price }}</td>
             <td>
               <button class="btn btn-sm btn-outline-danger update-cart" data-product="{{ item.product.id }}" data-action="delete">🗑️</button>
             </td>
@@ -43,7 +43,8 @@
     </div>
 
     <div class="text-end mt-4">
-      <h5>Total: ${{ order.get_cart_total|floatformat:2 }}</h5>
+      <h5>Total</h5>
+      <h5 id="cart-total">{{ order.get_cart_total|floatformat:2 }}</h5>
       <a href="{% url 'checkout' %}" class="btn btn-success mt-2" >Proceed to Checkout</a>
     </div>
 

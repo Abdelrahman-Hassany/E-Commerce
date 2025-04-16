@@ -9,8 +9,8 @@ def cooikeCart(request):
     except:
         cart = {}
     items = []
-    order = {'get_cart_total':0,'get_cart_item':0}
-    cartItems = order['get_cart_item']
+    order = {'get_cart_total':0,'get_cart_items':0}
+    cartItems = order['get_cart_items']
     print(cart)
     for i in cart:
         try:    
@@ -22,8 +22,8 @@ def cooikeCart(request):
 
             order['get_cart_total'] += total
             print('order total',order['get_cart_total']) 
-            order['get_cart_item'] = cartItems
-            print('order item',order['get_cart_item'])
+            order['get_cart_items'] = cartItems
+            print('order item',order['get_cart_items'])
             item = {
                 'id':product.id,
                 'product':{
@@ -31,7 +31,7 @@ def cooikeCart(request):
                 'imageURL':product.imageURL
                             }, 
                 'quantity':cart[i]['quantity'],
-                'digital':product.digital,'get_total':total,
+                'digital':product.digital,'total_price':total,
                         }
             items.append(item)
             if product.digital == False:
@@ -43,7 +43,6 @@ def cooikeCart(request):
             
 
 def cartData(request):
-    
     if request.user.is_authenticated:
         if request.user.is_seller:
             customer = request.user.seller
@@ -61,3 +60,53 @@ def cartData(request):
     return {'customer':customer,'order':order,'items':items}
 
 
+def updateCookieCart(request):
+    
+    data = json.loads(request.body)
+    product_id = str(data['productId'])
+    action = data['action']
+
+    cart = json.loads(request.COOKIES.get('cart', '{}'))
+    deleted = False
+
+    if action == 'add':
+        if product_id in cart:
+            cart[product_id]['quantity'] += 1
+        else:
+            cart[product_id] = {'quantity': 1}
+
+    elif action == 'remove':
+        if product_id in cart:
+            cart[product_id]['quantity'] -= 1
+            if cart[product_id]['quantity'] <= 0:
+                del cart[product_id]
+                deleted = True
+
+    elif action == 'delete':
+        if product_id in cart:
+            del cart[product_id]
+            deleted = True
+
+    
+    cart_total = 0
+    cart_count = 0
+    for pid, details in cart.items():
+        try:
+            product = Product.objects.get(id=pid)
+            cart_total += product.price * details['quantity']
+            cart_count += details['quantity']
+        except Product.DoesNotExist:
+            continue
+
+    product = Product.objects.get(id=product_id)
+    product_quantity = cart[product_id]['quantity'] if not deleted else 0
+    
+    total_product = product.price * product_quantity
+    
+    return {'product_quantity':product_quantity,
+            'total_product':total_product,
+            'cart_total':cart_total,
+            'cart_count':cart_count,
+            'deleted':deleted,
+            'cart':cart}
+    

@@ -14,7 +14,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" name="address" class="form-control" placeholder="123 Main St" required>
+                    <input type="text" name="address" class="form-control" placeholder="Your Street Name" required>
                 </div>
                 <div class="mb-3">
                     <label for="city" class="form-label">City</label>
@@ -47,7 +47,8 @@
                         </div>
                       
                         <div style="flex: 2;" class="text-end">
-                          <p class="mb-0">${{ item.product.price|floatformat:2 }}</p>
+                            <p class="mb-1 fw-bold">Price</p>
+                            <p class="mb-0">${{ item.product.price|floatformat:2 }}</p>
                         </div>
                       </div>                      
                 {% endfor %}

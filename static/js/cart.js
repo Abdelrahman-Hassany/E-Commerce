@@ -6,7 +6,7 @@ for (var i = 0; i < updateBtns.length; i++) {
         var action = this.dataset.action;
 
         console.log('Product Id:', productID, 'Action:', action);
-        updateUserOrder(productID, action); 
+        updateUserOrder(productID, action);
     });
 }
 
@@ -19,77 +19,63 @@ function updateUserOrder(productID, action) {
         },
         body: JSON.stringify({ 'productId': productID, 'action': action }),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Unauthorized or server error');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Response Body:', data);
-
-        // update quantity 
-        const quantityEl = document.getElementById(`item-quantity-${productID}`);
-        if (quantityEl && data.newQuantity !== undefined) {
-            quantityEl.innerText = data.newQuantity;
-        }
-
-        // delete cart and refresh page
-        if (data.newQuantity === 0 || data.deleted == 'True' ) {
-            const itemRow = document.getElementById(`item-row-${productID}`);
-            if (itemRow) {
-                itemRow.remove();
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Unauthorized or server error');
             }
-        }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response Body:', data);
 
-        // update quanityt in cart
-        const cartTotal = document.getElementById('cart-total');
-        if (cartTotal && data.cartItemsCount !== undefined) {
-            cartTotal.innerText = data.cartItemsCount;
-        }
+            // update quantity 
+            const quantityEl = document.getElementById(`item-quantity-${productID}`);
+            if (quantityEl && data.newQuantity !== undefined) {
+                quantityEl.innerText = data.newQuantity;
+            }
 
-        if (data.cartItemsCount === 0) {
-            const table = document.querySelector('table');
-            if (table) table.remove();
-        
-            const totalSection = document.querySelector('.text-end');
-            if (totalSection) totalSection.remove();
-        
-            const container = document.querySelector('.container');
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-info';
-            alert.innerText = 'Your cart is empty.';
-            container.appendChild(alert);
-        }
-
-        if(data.message == 'u must log in'){
-            console.log('log in plz!')
-
-            if (action == 'add' ) {
-                if(cart[productID] == undefined){
-                    cart[productID] = {'quantity':1}
-                }else{
-                    cart[productID]['quantity'] += 1 
+            // delete cart and refresh page
+            if (data.newQuantity === 0 || data.deleted == 'True') {
+                const itemRow = document.getElementById(`item-row-${productID}`);
+                if (itemRow) {
+                    itemRow.remove();
                 }
             }
+
+            // update cart total
+            const cartTotal = document.getElementById('cart-total');
+            if (cartTotal && data.cartTotal !== undefined) {
+                cartTotal.innerText = data.cartTotal;
+            }
+
             
-            if (action == 'remove'){
-                cart[productID]['quantity'] -= 1
-        
-                if (cart[productID]['quantity'] <= 0){
-                    console.log('cart is deleted')
-                    delete cart[productID]
-                }
+            const totalProductPrice = document.getElementById(`total_product_price_${productID}`);
+            if (totalProductPrice && data.ProductTotal !== undefined) {
+                totalProductPrice.innerText = data.ProductTotal;
             }
 
-            console.log('cart:',cart)
-            document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
-        }
-        
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount && data.cartItemsCount !== undefined) {
+                cartCount.innerText = data.cartItemsCount;
+            }
 
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('You need to log in to update the cart.');
-    });
+            if (data.cartItemsCount === 0) {
+                const table = document.querySelector('table');
+                if (table) table.remove();
+
+                const totalSection = document.querySelector('.text-end');
+                if (totalSection) totalSection.remove();
+
+                const container = document.querySelector('.container');
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-info';
+                alert.innerText = 'Your cart is empty.';
+                container.appendChild(alert);
+            }
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('You need to log in to update the cart.');
+        });
 }

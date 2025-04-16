@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db.models import F,Sum
 from django.http import JsonResponse
 import json
-from .utils import cartData,cooikeCart
+from .utils import cartData,cooikeCart,updateCookieCart
 from .models import Order,Product,OrderItem,ShippingAddress
 from CoreAuth.models import Customer
 
@@ -37,57 +37,30 @@ import json
 def updatecart(request):
     if not request.user.is_authenticated:
         try:
-            data = json.loads(request.body)
-            product_id = str(data['productId'])
-            action = data['action']
-
-            cart = json.loads(request.COOKIES.get('cart', '{}'))
-            deleted = False
-
-            if action == 'add':
-                if product_id in cart:
-                    cart[product_id]['quantity'] += 1
-                else:
-                    cart[product_id] = {'quantity': 1}
-
-            elif action == 'remove':
-                if product_id in cart:
-                    cart[product_id]['quantity'] -= 1
-                    if cart[product_id]['quantity'] <= 0:
-                        del cart[product_id]
-                        deleted = True
-
-            elif action == 'delete':
-                if product_id in cart:
-                    del cart[product_id]
-                    deleted = True
-
-         
-            cart_total = 0
-            cart_count = 0
-            for pid, details in cart.items():
-                try:
-                    product = Product.objects.get(id=pid)
-                    cart_total += product.price * details['quantity']
-                    cart_count += details['quantity']
-                except Product.DoesNotExist:
-                    continue
-
+            dataCookieCart =  updateCookieCart(request)
+            product_quantity = dataCookieCart['product_quantity']
+            total_product = dataCookieCart['total_product']
+            cart_total = dataCookieCart['cart_total']
+            cart_count = dataCookieCart['cart_count']
+            deleted = dataCookieCart['deleted']
+            cart = dataCookieCart['cart']
+            
             response = JsonResponse({
                 'message': 'Item updated',
-                'deleted': deleted,
-                'newQuantity': 0 if deleted else cart[product_id]['quantity'],
+                'newQuantity': product_quantity,
+                'ProductTotal': total_product,
                 'cartTotal': cart_total,
-                'cartItemsCount': cart_count
+                'cartItemsCount': cart_count,
+                'deleted': deleted,
             })
+            
             response.set_cookie('cart', json.dumps(cart), max_age=3600 * 24 * 7)
             return response
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
-    else:
-        authenticated = True
+    if request.user.is_authenticated:
         datacart = json.loads(request.body)
         cart = cartData(request)
         
@@ -110,13 +83,14 @@ def updatecart(request):
             orderItem.delete()
             deleted = True
     
-    if authenticated:
+    
         return JsonResponse({
         'message': 'Item updated',
         'newQuantity': 0 if deleted else orderItem.quantity,
+        'ProductTotal': orderItem.total_price,
+        'cartTotal': order.get_cart_total,
         'cartItemsCount': order.get_cart_items,
         'deleted':deleted
         })
     
-    if authenticated == False:
-        return JsonResponse({'message':'u must log in'})
+   
