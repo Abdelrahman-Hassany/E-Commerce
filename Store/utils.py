@@ -110,3 +110,30 @@ def updateCookieCart(request):
             'deleted':deleted,
             'cart':cart}
     
+    
+def merge_cookie_cart_to_user_cart(request):
+    cookie_cart = json.loads(request.COOKIES.get('cart', '{}'))
+    
+    if not cookie_cart:
+        return
+
+    if request.user.is_seller:
+        customer = request.user.seller
+        order, create = Order.objects.get_or_create(seller=customer, complete=False)
+    elif request.user.is_customer:
+        customer = request.user.customer
+        order, create = Order.objects.get_or_create(customer=customer, complete=False)
+    else:
+        return
+
+    for pid, details in cookie_cart.items():
+        try:
+            product = Product.objects.get(id=pid)
+            quantity = details['quantity']
+            order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+            order_item.quantity += quantity
+            order_item.save()
+        except Product.DoesNotExist:
+            continue
+
+    

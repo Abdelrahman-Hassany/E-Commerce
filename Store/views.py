@@ -1,13 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.db.models import F,Sum
 from django.http import JsonResponse
 import json
-from .utils import cartData,cooikeCart,updateCookieCart
+from .utils import cartData,cooikeCart,updateCookieCart,merge_cookie_cart_to_user_cart
 from .models import Order,Product,OrderItem,ShippingAddress
-from CoreAuth.models import Customer
 
 
 def store(request):
+    cart_cookie = json.loads(request.COOKIES.get('cart', '{}'))
+
+    if request.user.is_authenticated and cart_cookie and not request.session.get('cart_merged'):
+        merge_cookie_cart_to_user_cart(request)
+        request.session['cart_merged'] = True
+        context = cartData(request)
+        response = redirect('cart')
+        response.delete_cookie('cart')
+        return response
+    
     products = Product.objects.all()
     data = cartData(request)
     items = data['items']
@@ -16,11 +25,22 @@ def store(request):
     return render(request,'store/store.html',context)
 
 def cart(request):
+    cart_cookie = json.loads(request.COOKIES.get('cart', '{}'))
+
+    if request.user.is_authenticated and cart_cookie and not request.session.get('cart_merged'):
+        merge_cookie_cart_to_user_cart(request)
+        request.session['cart_merged'] = True
+        context = cartData(request)
+        response = render(request,'store/cart.html', context)
+        response.delete_cookie('cart')
+        return response
+
     data = cartData(request)
     items = data['items']
     order = data['order']
-    context = {'items':items,'order':order}
-    return render(request,'store/cart.html',context)
+    context = {'items': items, 'order': order}
+    return render(request, 'store/cart.html', context)
+
 
 def cheackout(request):
     data = cartData(request)
