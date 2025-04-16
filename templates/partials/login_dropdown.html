@@ -1,0 +1,26 @@
+
+<div class="dropdown me-3">
+    <a class="btn btn-outline-info border-0 dropdown-toggle" href="#" role="button" id="loginDropdown"
+        data-bs-toggle="dropdown" aria-expanded="false" title="Login">
+        <i class="bi bi-person" style="font-size: 20px;"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end p-4 shadow" style="min-width: 260px;">
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <div class="text-center mt-2">
+            <small>Don't have an account? <a href="{% url 'register' %}">Register</a></small>
+            <br>
+            <small><a href="{% url 'login' %}">Go to login page</a></small>
+        </div>
+    </div>
+</div>

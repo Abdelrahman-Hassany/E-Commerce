@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% csrf_token %}
+
+<br>
+<div class="container">
+  <div class="row justify-content-center">
+    {% for product in products %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex justify-content-center">
+        <div class="card h-100 shadow-sm" style="width: 100%; max-width: 260px;">
+          <img src="{{ product.imageURL }}" class="card-img-top img-fluid"
+               alt="{{ product.name }}"
+               style="max-height: 150px; object-fit: contain; padding: 10px;">
+          <div class="card-body p-2 text-center">
+            <h6 class="card-title mb-1">{{ product.name }}</h6>
+            <p class="card-text text-primary fw-bold mb-1">${{ product.price }}</p>
+            <p class="text-muted small">{{ product.description|truncatewords:10 }}</p>
+
+            <div class="d-grid gap-1">
+              <a href="#" class="btn btn-sm btn-primary">View Details</a>
+              <button data-product="{{ product.id }}" data-action="add"
+                      class="btn btn-sm btn-outline-secondary update-cart">
+                Add to cart
+              </button>
+              <a href="#" class="btn btn-sm btn-outline-success">View</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}
+
+

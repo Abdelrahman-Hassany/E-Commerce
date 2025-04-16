@@ -1,0 +1,18 @@
+
+<div class="dropdown me-3">
+    <a class="btn btn-outline-info border-0 dropdown-toggle" href="#" role="button" id="accountDropdown"
+        data-bs-toggle="dropdown" aria-expanded="false" title="My Account">
+        <i class="bi bi-person" style="font-size: 20px;"></i>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="accountDropdown">
+        <li>
+            <a class="dropdown-item" href="#">Profile</a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li>
+            <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
+        </li>
+    </ul>
+</div>

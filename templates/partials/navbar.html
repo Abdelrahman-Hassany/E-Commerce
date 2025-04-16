@@ -1,0 +1,89 @@
+<!-- navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'store' %}">Store</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item active">
+          <a class="nav-link nav" href="{% url 'store' %}">Home</a>
+        </li>
+
+
+        <li class="nav-item dropdown nav">
+          <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Electronics
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+            <!-- Computer/Laptop -->
+            <li class="dropdown-submenu">
+              <a class="dropdown-item dropdown-toggle" href="#" id="compMenu">Computer/Laptop</a>
+              <ul class="dropdown-menu" id="compSubmenu">
+                <li><a class="dropdown-item" href="#">Tools</a></li>
+                <li><a class="dropdown-item" href="#">Desktops</a></li>
+                <li><a class="dropdown-item" href="#">Accessories</a></li>
+              </ul>
+            </li>
+
+            <!-- Mobiles -->
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Mobiles</a></li>
+
+            <!-- Home Appliances -->
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="#">Home Appliances</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown nav">
+          <a class="nav-link dropdown-toggle" href="#" id="superMarketDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            SuperMarket
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="superMarketDropdown">
+            <li><a class="dropdown-item" href="#">Products1</a></li>
+            <li><a class="dropdown-item" href="#">Products2</a></li>
+            <li><a class="dropdown-item" href="#">Products3</a></li>
+            <li><a class="dropdown-item" href="#">Products4</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center">
+
+        <!-- Search Form-->
+        <form class="d-flex me-3">
+          <input class="form-control me-2 bg-white text-dark border w-100" type="search" placeholder="Search">
+
+          <button class="btn btn-outline-info border-0" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+
+
+        <!-- login/register -->
+        {% if request.user.is_authenticated %}
+        {% include 'partials/profile_dropdown.html' %}
+        {% else %}
+        {% include 'partials/login_dropdown.html' %}
+        {% endif %}
+
+
+
+        <!-- cart -->
+        <a href="{% url 'cart' %}" class="btn btn-outline-info border-0">
+          <i class="bi bi-cart me-1"></i><span id="cart-total">{{ order.get_cart_items }}</span>
+        </a>
+      </div>
+    </div>
+</nav>

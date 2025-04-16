@@ -1,0 +1,148 @@
+body{
+	background-color: hsl(0, 0%, 98%);
+}
+
+h1,h2,h3,h4,h5,h6{
+	color:hsl(0, 0%, 30%);
+}
+
+.box-element{
+	box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+	background-color: #fff;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+.thumbnail{
+	width: 100%;
+	height: 200px;
+	-webkit-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    -moz-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+}
+
+.product{
+	border-radius: 0 0 4px 4px;
+}
+
+.bg-dark{
+	background-color: #4f868c!important;
+}
+
+#cart-icon{
+	width:25px;
+	display: inline-block;
+	margin-left: 15px;
+}
+
+.form-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+#cart-icon {
+    width: 30px; 
+    height: auto;
+    margin-left: 0;
+}
+
+.cart-container {
+    display: flex;
+    align-items: center;
+}
+
+#cart-total {
+    margin: 0;
+    font-weight: bold;
+    color: red;
+}
+
+.col-lg-4, .col-lg-6, .col-lg-8, .col-lg-12{
+	margin-top: 10px;
+}
+
+.btn{
+	border-radius: 0;
+}
+
+.row-image{
+	max-width: 100px; /* تحديد حجم الصورة */
+    height: auto;
+    border-radius: 5px;
+}
+
+.form-field{
+	width:250px;
+	display: inline-block;
+	padding: 5px;
+}
+
+.cart-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+  }
+  
+
+.quantity{
+	display: inline-block;
+	font-weight: 700;
+	padding-right:10px;
+	
+
+}
+
+.chg-quantity{
+	width: 12px;
+	cursor: pointer;
+	display: block;
+	margin-top: 5px;
+	transition:.1s;
+}
+
+.chg-quantity:hover{
+	opacity: .6;
+}
+
+
+.hidden{
+	display: none!important;
+}
+
+.nav-btn {
+	margin-left: 10px;
+  }
+
+  .search-button {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-top-right-radius: 50px;
+	border-bottom-right-radius: 50px;
+	padding: 0.5rem 1rem;
+  }
+
+  .dropdown-submenu {
+	position: relative;
+  }
+  
+  .dropdown-submenu > .dropdown-menu {
+	top: 0;
+	left: 100%; /* علشان القائمة تطلع يمين */
+	display: none;
+	position: absolute;
+	min-width: 180px;
+	z-index: 1000;
+  }
+  
+  .dropdown-submenu.show > .dropdown-menu {
+	display: block;
+  }
+
+  input::placeholder {
+	color: white !important;
+	opacity: 1;
+  }
+
+
+  
