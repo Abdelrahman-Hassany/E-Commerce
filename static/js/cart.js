@@ -79,3 +79,6 @@ function updateUserOrder(productID, action) {
             alert('You need to log in to update the cart.');
         });
 }
+
+
+

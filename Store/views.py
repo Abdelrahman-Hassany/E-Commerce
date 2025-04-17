@@ -4,7 +4,7 @@ from django.http import JsonResponse
 import json
 from .utils import cartData,cooikeCart,updateCookieCart,merge_cookie_cart_to_user_cart
 from .models import Order,Product,OrderItem,ShippingAddress
-
+import datetime
 
 def store(request):
     cart_cookie = json.loads(request.COOKIES.get('cart', '{}'))
@@ -38,12 +38,8 @@ def cheackout(request):
     items = data['items']
     order = data['order']
     context = {'items':items,'order':order}
-    context = {'items':items,'order':order}
     return render(request,'store/checkout.html',context)
 
-from django.http import JsonResponse
-from .models import Product
-import json
 
 def updatecart(request):
     if not request.user.is_authenticated:
@@ -104,4 +100,37 @@ def updatecart(request):
         'deleted':deleted
         })
     
-   
+
+def processOrder(request):
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
+    total = float(data['form']['total'])
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        
+        if total == order.get_cart_total:
+            order.complete = True
+
+        order.transaction_id = transaction_id
+        order.save()
+
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['form']['address'],
+            city=data['form']['city'],
+            state=data['form']['state'],
+            zipcode=data['form']['zipcode'],
+        )
+
+        return JsonResponse({'message': 'Order completed successfully'}, status=200)
+
+    return JsonResponse({'message': 'You must log in'}, status=401)
+
+
+
+def payment_success(request):
+    return JsonResponse({'message':'payment succcess,thank u!'})
+    

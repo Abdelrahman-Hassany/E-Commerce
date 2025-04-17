@@ -11,7 +11,6 @@ def cooikeCart(request):
     items = []
     order = {'get_cart_total':0,'get_cart_items':0}
     cartItems = order['get_cart_items']
-    print(cart)
     for i in cart:
         try:    
             cartItems += cart[i]['quantity']
@@ -37,27 +36,27 @@ def cooikeCart(request):
             if product.digital == False:
                 order['shipping'] = True
         except Exception as e:
-            print(f"❌ Error in cookieCart for product ID {i}: {e}")
+            print(f" Error in cookieCart for product ID {i}: {e}")
             
     return {'items': items,'order':order,'cartItems':cartItems,}
             
-
 def cartData(request):
     if request.user.is_authenticated:
         if request.user.is_seller:
             customer = request.user.seller
-            order, create = Order.objects.get_or_create(seller=customer,complete=False)
-        if request.user.is_customer:
+        elif request.user.is_customer:
             customer = request.user.customer
-            order, create = Order.objects.get_or_create(customer=customer,complete=False)
+     
+        order, create = Order.objects.get_or_create(customer=customer, complete=False)
         items = order.orderitem_set.all()
+
     else:
         data_cookie_cart = cooikeCart(request)
         customer = 'u need to login'
         order = data_cookie_cart['order']
         items = data_cookie_cart['items']
 
-    return {'customer':customer,'order':order,'items':items}
+    return {'customer': customer, 'order': order, 'items': items}
 
 
 def updateCookieCart(request):

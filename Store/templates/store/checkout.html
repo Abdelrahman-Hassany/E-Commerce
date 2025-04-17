@@ -4,14 +4,11 @@
 <div class="container mt-5" style="padding-bottom: 80px;">
     <h3 class="mb-4">Checkout</h3>
     <div class="row">
-
+        {% csrf_token %}
         <!-- Shipping Form -->
+        {% if request.user.is_authenticated %}
         <div class="col-md-6">
             <form id="form" method="POST">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input type="text" name="name" class="form-control" placeholder="Your name..." required>
-                </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
                     <input type="text" name="address" class="form-control" placeholder="Your Street Name" required>
@@ -21,12 +18,19 @@
                     <input type="text" name="city" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label for="zipcode" class="form-label">Zip Code</label>
-                    <input type="text" name="zipcode" class="form-control" required>
+                    <label for="state" class="form-label">state</label>
+                    <input type="text" name="state" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-success w-100 mt-3">Place Order</button>
+                <div class="mb-3">
+                    <label for="zipcode" class="form-label">Zip Code</label>
+                    <input type="text" name="zipcode" class="form-control">
+                </div>
+                <div id="paypal-button-container"></div>
             </form>
         </div>
+        {% else %}
+        <h1 class='mb-4'>You must log in.</h1>
+        {% endif %}
 
         <!-- Order Summary -->
         <div class="col-md-6">
@@ -38,29 +42,92 @@
                     {% for item in items %}
                     <div class="cart-row d-flex align-items-center border-bottom py-2">
                         <div style="flex: 1;">
-                          <img class="img-fluid" src="{{ item.product.imageURL }}" style="width: 70px; height: 70px; object-fit: contain;">
+                            <img class="img-fluid" src="{{ item.product.imageURL }}"
+                                style="width: 70px; height: 70px; object-fit: contain;">
                         </div>
-                      
+
                         <div style="flex: 3;" class="px-3">
-                          <p class="mb-1 fw-bold">{{ item.product.name }}</p>
-                          <p class="mb-0 text-muted">Quantity: {{ item.quantity }}</p>
+                            <p class="mb-1 fw-bold">{{ item.product.name }}</p>
+                            <p class="mb-0 text-muted">Quantity: {{ item.quantity }}</p>
                         </div>
-                      
+
                         <div style="flex: 2;" class="text-end">
                             <p class="mb-1 fw-bold">Price</p>
                             <p class="mb-0">${{ item.product.price|floatformat:2 }}</p>
                         </div>
-                      </div>                      
-                {% endfor %}
-                <hr>
-                <div class="d-flex justify-content-between fw-bold">
-                    <span>Total</span>
-                    <span>${{ order.get_cart_total|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total</span>
+                        <span>${{ order.get_cart_total|floatformat:2 }}</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
-</div>
+<script
+    src="https://www.paypal.com/sdk/js?client-id=AciIG1RXEOvH6iK2QLbgrZrtFMlYLtgiFZ263tccQV6z_a7tlUceEw9Xhh83GIVlcurc9_82BO5xAd5z&currency=USD"></script>
+
+<script>
+    var total = '{{order.get_cart_total|floatformat:2}}'
+    // Render the PayPal button into #paypal-button-container
+    paypal.Buttons({
+
+        // Set up the transaction
+        createOrder: function (data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: parseFloat(total).toFixed(2)
+                    }
+                }]
+            });
+        },
+
+        // Finalize the transaction
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+                submitFormData()
+            });
+        }
+
+
+    }).render('#paypal-button-container');
+    function submitFormData() {
+        console.log("Payment completed. Sending data to backend...");
+
+        console.log("Total to send:", total);
+
+        var userFormData = {
+            address: document.querySelector('input[name="address"]').value,
+            city: document.querySelector('input[name="city"]').value,
+            state: document.querySelector('input[name="state"]').value,
+            zipcode: document.querySelector('input[name="zipcode"]').value,
+            total: total
+        };
+
+        fetch('/process_order/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                form: userFormData,
+                payment_method: 'PayPal'
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                cart = {}
+                document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+                window.location.href = "/"
+            });
+    }
+</script>
+
 {% endblock %}
