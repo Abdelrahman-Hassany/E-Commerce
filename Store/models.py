@@ -72,6 +72,8 @@ class OrderItem(models.Model):
     def __str__(self):
         return self.product.name
     
+
+    
 class ShippingAddress(models.Model):
     customer = models.ForeignKey('CoreAuth.Customer',on_delete=models.SET_NULL,null=True,blank=True)
     order = models.ForeignKey(Order,on_delete=models.SET_NULL,null=True,blank=True)
@@ -85,3 +87,27 @@ class ShippingAddress(models.Model):
         return self.address
     
     
+class OrderStatus(models.Model):
+    class StatusChoice(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        COMPLETE = 'complete', 'Complete'
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    customer = models.ForeignKey('CoreAuth.Customer', on_delete=models.CASCADE)
+    address = models.CharField(max_length=255)
+    seller = models.ForeignKey('CoreAuth.Seller', on_delete=models.CASCADE)
+    statuschoice = models.CharField(max_length=10, choices=StatusChoice.choices, default=StatusChoice.PENDING)
+    date_updated = models.DateTimeField(auto_now=True)
+    quantity = models.IntegerField(null=True,blank=True)
+    
+    def __str__(self):
+        return f"Order {self.order.id} - Product {self.product.name} - {self.statuschoice}"
+
+    @property
+    def is_complete(self):
+        return self.statuschoice == self.StatusChoice.COMPLETE
+
+    @property
+    def is_pending(self):
+        return self.statuschoice == self.StatusChoice.PENDING

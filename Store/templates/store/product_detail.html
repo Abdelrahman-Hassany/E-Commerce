@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% if request.user.is_authenticated and request.user.seller %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Order Details</h2>
+    {% if order_status %}
+    <div class="row justify-content-center">
+        {% for item in order_status %}
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 text-center">
+
+                    <img src="{{ item.product.imageURL }}" class="card-img-top img-fluid" "
+                        style=" max-height: 150px; object-fit: contain; padding: 10px;">
+
+                    <!-- Product Name -->
+                    <h5 class="card-title mb-3">{{ item.product.name }}</h5>
+
+                    <!-- Customer Name -->
+                    <p class="text-muted mb-2"><strong>Customer:</strong> {{ item.customer.name }}</p>
+                    <p class="text-muted mb-2"><strong>Address: {{ item.address }}</strong>
+                    <p class="text-muted mb-2"><strong>Quantity: {{ item.quantity }}</strong>
+                    </p>
+                    </p>
+                    </p>
+
+                    <!-- Order Status -->
+                    <p class="text-muted mb-2"><strong>Status:</strong> {{ item.statuschoice }}</p>
+
+                    <!-- Action Button -->
+                    <a href="#" class="btn btn-primary btn-sm mt-3">Order processing</a>
+
+                    <!-- Action Button -->
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">There is no Product.</div>
+    {% endif %}
+</div>
+{% else %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h3 class="text-center mb-4">You are Not a Seller!!</h3>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

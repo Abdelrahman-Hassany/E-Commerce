@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Order, OrderItem, ShippingAddress
+from .models import Product, Order, OrderItem, ShippingAddress,OrderStatus
 from CoreAuth.models import User,Customer,Seller
 # Register your models here.
 admin.site.site_header = "E-Commerce Administration"
@@ -12,4 +12,5 @@ admin.site.register(User)
 admin.site.register(Product)
 admin.site.register(Order)
 admin.site.register(OrderItem)
+admin.site.register(OrderStatus)
 admin.site.register(ShippingAddress)

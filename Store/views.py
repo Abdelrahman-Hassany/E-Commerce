@@ -6,7 +6,7 @@ from django.http import JsonResponse
 import json
 import datetime
 from .utils import cartData,cooikeCart,updateCookieCart,merge_cookie_cart_to_user_cart
-from .models import Order,Product,OrderItem,ShippingAddress
+from .models import Order,Product,OrderItem,ShippingAddress,OrderStatus
 from .forms import UploadProduct
 
 @login_required
@@ -127,7 +127,18 @@ def updatecart(request):
         'cartItemsCount': order.get_cart_items,
         'deleted':deleted
         })
-    
+        
+@login_required
+def product_detail(request):
+    try:
+        if request.user.is_authenticated and request.user.seller:
+            seller = request.user.seller  
+            order_status = OrderStatus.objects.filter(seller=seller)
+            context = {'order_status':order_status}
+            return render(request,'store/product_detail.html',context)
+    except Exception as e:
+        print(e)
+        return redirect('store')
 
 def processOrder(request):
     transaction_id = datetime.datetime.now().timestamp()
@@ -143,7 +154,18 @@ def processOrder(request):
 
         order.transaction_id = transaction_id
         order.save()
+        
+        for order_item in order.orderitem_set.all():
+            OrderStatus.objects.get_or_create(
+                order=order,
+                product=order_item.product,
+                customer=customer,
+                seller=order_item.product.seller,  
+                address=data['form']['address'],
+                quantity = order_item.quantity
+            )
 
+        
         ShippingAddress.objects.create(
             customer=customer,
             order=order,
