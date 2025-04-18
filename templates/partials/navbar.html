@@ -1,4 +1,4 @@
-<!-- navbar -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'store' %}">Store</a>
@@ -13,38 +13,22 @@
           <a class="nav-link nav" href="{% url 'store' %}">Home</a>
         </li>
 
-
+        <!-- Electronics Dropdown -->
         <li class="nav-item dropdown nav">
-          <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             Electronics
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-            <!-- Computer/Laptop -->
             <li class="dropdown-submenu">
-              <a class="dropdown-item dropdown-toggle" href="#" id="compMenu">Computer/Laptop</a>
-              <ul class="dropdown-menu" id="compSubmenu">
-                <li><a class="dropdown-item" href="#">Tools</a></li>
-                <li><a class="dropdown-item" href="#">Desktops</a></li>
-                <li><a class="dropdown-item" href="#">Accessories</a></li>
-              </ul>
-            </li>
-
-            <!-- Mobiles -->
-            <li>
-              <hr class="dropdown-divider">
+              <a class="dropdown-item" href="#">Computer/Laptop</a>
             </li>
             <li><a class="dropdown-item" href="#">Mobiles</a></li>
-
-            <!-- Home Appliances -->
-            <li>
-              <hr class="dropdown-divider">
-            </li>
             <li><a class="dropdown-item" href="#">Home Appliances</a></li>
           </ul>
         </li>
 
+        <!-- SuperMarket Dropdown -->
         <li class="nav-item dropdown nav">
           <a class="nav-link dropdown-toggle" href="#" id="superMarketDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
@@ -57,19 +41,32 @@
             <li><a class="dropdown-item" href="#">Products4</a></li>
           </ul>
         </li>
+        
+        <!-- Seller Page -->
+        {% if request.user.is_authenticated and request.user.seller %}
+        <li class="nav-item dropdown nav">
+          <a class="nav-link dropdown-toggle" href="#" id="superMarketDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Seller Page
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="superMarketDropdown">
+            <li><a class="dropdown-item" href="{% url 'upload_product' %}">Upload Product</a></li>
+            <li><a class="dropdown-item" href="#">Products2</a></li>
+            <li><a class="dropdown-item" href="#">Products3</a></li>
+            <li><a class="dropdown-item" href="#">Products4</a></li>
+          </ul>
+        </li>
+        {% endif %}
       </ul>
-
+   
       <div class="d-flex align-items-center">
-
-        <!-- Search Form-->
+        <!-- Search Form -->
         <form class="d-flex me-3">
           <input class="form-control me-2 bg-white text-dark border w-100" type="search" placeholder="Search">
-
           <button class="btn btn-outline-info border-0" type="submit">
             <i class="bi bi-search"></i>
           </button>
         </form>
-
 
         <!-- login/register -->
         {% if request.user.is_authenticated %}
@@ -78,12 +75,11 @@
         {% include 'partials/login_dropdown.html' %}
         {% endif %}
 
-
-
         <!-- cart -->
         <a href="{% url 'cart' %}" class="btn btn-outline-info border-0">
           <i class="bi bi-cart me-1"></i><span id="cart-count">{{ order.get_cart_items }}</span>
         </a>
       </div>
     </div>
+  </div>
 </nav>

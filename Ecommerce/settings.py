@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'CoreAuth',
     'Store',
     'DashBoard',
+    'sweetify',
 ]
 
 MIDDLEWARE = [
@@ -132,4 +133,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'CoreAuth.User'
+
+SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
+
 

@@ -1,10 +1,38 @@
 from django.shortcuts import render,redirect
-from django.db.models import F,Sum
+from django.contrib.auth.decorators import login_required
+import sweetify
+from django.contrib import messages
 from django.http import JsonResponse
 import json
+import datetime
 from .utils import cartData,cooikeCart,updateCookieCart,merge_cookie_cart_to_user_cart
 from .models import Order,Product,OrderItem,ShippingAddress
-import datetime
+from .forms import UploadProduct
+
+@login_required
+def upload_product_view(request):
+    if request.method == 'POST':
+        form = UploadProduct(request.POST,request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)  
+            if request.user.is_authenticated:
+                if request.user.seller:
+                    print('test')
+                    messages.success(request, 'product uploaded Success!')
+                    product.seller = request.user.seller
+                    product.save()
+                    return redirect('upload_product')
+                elif request.user.customer:
+                    print("User is a customer")
+                    messages.error(request, 'You must be a seller to upload products!')
+                    return redirect('upload_product')
+        
+    else:
+        form = UploadProduct()
+        
+    context = {'form':form}
+    return render(request,'store/upload.html',context)
+
 
 def store(request):
     cart_cookie = json.loads(request.COOKIES.get('cart', '{}'))
@@ -129,8 +157,6 @@ def processOrder(request):
 
     return JsonResponse({'message': 'You must log in'}, status=401)
 
-
-
-def payment_success(request):
+def confirmation(request):
     return JsonResponse({'message':'payment succcess,thank u!'})
     

@@ -5,51 +5,55 @@
   <h3 class="mb-4">Your Cart</h3>
   {% csrf_token %}
   {% if items %}
-    <div class="table-responsive" >
-      <table class="table align-middle text-center shadow-sm">
-        <thead class="table-light">
-          <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Product</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in items %}
-          <tr id="item-row-{{ item.product.id }}">
-            <td>
-              <img src="{{ item.product.imageURL }}" alt="{{ item.product.name }}" style="width: 60px; height: 60px; object-fit: contain;">
-            </td>
-            <td>{{ item.product.name }}</td>
-            <td>${{ item.product.price }}</td>
-            <td>
-              <div class="d-flex justify-content-center align-items-center">
-                <button class="btn btn-sm btn-outline-secondary update-cart" data-product="{{ item.product.id }}" data-action="remove">-</button>
-                <span class="mx-2" id="item-quantity-{{ item.product.id }}">{{ item.quantity }}</span>
-                <button class="btn btn-sm btn-outline-secondary update-cart" data-product="{{ item.product.id }}" data-action="add">+</button>
-              </div>
-            </td>
-            <td id="total_product_price_{{ item.product.id }}">${{ item.total_price }}</td>
-            <td>
-              <button class="btn btn-sm btn-outline-danger update-cart" data-product="{{ item.product.id }}" data-action="delete">🗑️</button>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+  <div class="table-responsive">
+    <table class="table align-middle text-center shadow-sm">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Image</th>
+          <th scope="col">Product</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Total</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr id="item-row-{{ item.product.id }}">
+          <td>
+            <img src="{{ item.product.imageURL }}" alt="{{ item.product.name }}"
+              style="width: 60px; height: 60px; object-fit: contain;">
+          </td>
+          <td>{{ item.product.name }}</td>
+          <td>${{ item.product.price }}</td>
+          <td>
+            <div class="d-flex justify-content-center align-items-center">
+              <button class="btn btn-sm btn-outline-secondary update-cart" data-product="{{ item.product.id }}"
+                data-action="remove">-</button>
+              <span class="mx-2" id="item-quantity-{{ item.product.id }}">{{ item.quantity }}</span>
+              <button class="btn btn-sm btn-outline-secondary update-cart" data-product="{{ item.product.id }}"
+                data-action="add">+</button>
+            </div>
+          </td>
+          <td id="total_product_price_{{ item.product.id }}">${{ item.total_price }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger update-cart" data-product="{{ item.product.id }}"
+              data-action="delete">🗑️</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <div class="text-end mt-4">
-      <h5>Total</h5>
-      <h5 id="cart-total">{{ order.get_cart_total|floatformat:2 }}</h5>
-      <a href="{% url 'checkout' %}" class="btn btn-success mt-2" >Proceed to Checkout</a>
-    </div>
+  <div class="text-end mt-4">
+    <h5>Total</h5>
+    <h5 id="cart-total">{{ order.get_cart_total|floatformat:2 }}</h5>
+    <a href="{% url 'checkout' %}" class="btn btn-success mt-2">Proceed to Checkout</a>
+  </div>
 
   {% else %}
-    <div class="alert alert-info">Your cart is empty.</div>
+  <div class="alert alert-info">Your cart is empty.</div>
   {% endif %}
 </div>
 {% endblock %}

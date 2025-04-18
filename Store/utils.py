@@ -44,10 +44,10 @@ def cartData(request):
     if request.user.is_authenticated:
         if request.user.is_seller:
             customer = request.user.seller
+            order, create = Order.objects.get_or_create(seller=customer, complete=False)
         elif request.user.is_customer:
             customer = request.user.customer
-     
-        order, create = Order.objects.get_or_create(customer=customer, complete=False)
+            order, create = Order.objects.get_or_create(customer=customer, complete=False)
         items = order.orderitem_set.all()
 
     else:
