@@ -1,1 +1,12 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django secret files
 .env
+*.sqlite3
+
+# VSCode settings
+.vscode/
+
