@@ -3,7 +3,6 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.db.models import F
 
-
 class Product(models.Model):
     class RatingChoice(models.IntegerChoices):
         NOT_RATED = 0, 'Not Rated Yet'

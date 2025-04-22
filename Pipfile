@@ -10,6 +10,7 @@ faker = "*"
 sweetify = "*"
 mysqlclient = "*"
 black = "*"
+python-dotenv = "*"
 
 [dev-packages]
 black = "*"
