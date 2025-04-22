@@ -3,8 +3,8 @@ from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 from .form import RegistrationForm
 
-# Create your views here.
 
+#registration view, Handles user registration using a form
 def registration_view(request):
     if request.method == 'POST':
         form =RegistrationForm(request.POST)
@@ -17,7 +17,7 @@ def registration_view(request):
     context = {'form':form}
     return render(request,'accounts/registration.html',context)
 
-
+#login
 def login_view(request):
     error_message = None 
     if request.method == 'POST':
@@ -31,7 +31,8 @@ def login_view(request):
         else:
             error_message = "invalid credentials"
     return render(request, 'accounts/login.html', {'error': error_message})
-    
+
+#logout
 @login_required
 def logout_view(request):
     logout(request)

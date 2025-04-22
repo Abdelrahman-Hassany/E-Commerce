@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.db.models import F
 
+
 class Product(models.Model):
     class RatingChoice(models.IntegerChoices):
         NOT_RATED = 0, 'Not Rated Yet'
@@ -17,9 +18,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=9,decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     rate = models.PositiveSmallIntegerField(choices=RatingChoice,default=RatingChoice.NOT_RATED)
-    image = models.ImageField(upload_to='media/images/products',blank=True, null=True)
+    image = models.ImageField(upload_to='images/products', blank=True, null=True,max_length=255)
     digital = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.name
     
@@ -111,3 +112,19 @@ class OrderStatus(models.Model):
     @property
     def is_pending(self):
         return self.statuschoice == self.StatusChoice.PENDING
+
+class TrackShipment(models.Model):
+    class StatusChoice(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        PREPARED = 'prepared', 'Prepared'
+        CANCELED = 'canceled' , 'Canceled'
+    seller = models.ForeignKey('CoreAuth.Seller', on_delete=models.CASCADE,null=True,blank=True)
+    customer = models.ForeignKey('CoreAuth.Customer', on_delete=models.CASCADE,null=True,blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    address = models.CharField(max_length=255)
+    shipmentstatus = models.CharField(max_length=10, choices=StatusChoice.choices, default=StatusChoice.PENDING)
+    orderstatus = models.ForeignKey(OrderStatus,on_delete=models.SET_NULL,null=True,blank=True)
+    
+    def __str__(self):
+        return f" Shipment id {str(self.id)} - Product Name {self.product.name} - Shipmentstatus {self.shipmentstatus}"

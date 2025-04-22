@@ -2,11 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
+#class User import AbstractUser for add some fields for user model
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     is_customer = models.BooleanField(default=False)
     is_seller = models.BooleanField(default=False)
     
+#Customer Model
 class Customer(models.Model):
     name = models.CharField(max_length=255)
     user = models.OneToOneField(settings.AUTH_USER_MODEL,blank=True,null=True,on_delete=models.CASCADE,related_name='customer')
@@ -15,7 +17,8 @@ class Customer(models.Model):
     
     def __str__(self):
         return self.name
-    
+
+#Seller Model  
 class Seller(models.Model):
     class RatingChoice(models.IntegerChoices):
         NOT_RATED = 0, 'Not Rated Yet'

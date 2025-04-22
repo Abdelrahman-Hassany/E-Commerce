@@ -2,7 +2,10 @@ from django import forms
 from django.contrib.auth import get_user_model
 from .models import Customer,Seller
 
+#Refrance user class
 User = get_user_model()
+
+#Registration Form 
 class RegistrationForm(forms.ModelForm):
     name = forms.CharField(
         label="Enter Your name",
@@ -24,6 +27,7 @@ class RegistrationForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
+    #connect the form with the model and customize fields
     class Meta:
         model = User
         fields = ['username', 'name', 'email', 'password', 'password_confirm']

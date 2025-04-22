@@ -1,6 +1,7 @@
 from django import forms
 from .models import Product
 
+#form for uploadproduct
 class UploadProduct(forms.ModelForm):
     
     class Meta:

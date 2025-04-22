@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% csrf_token %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Order Details</h2>
+    {% if track_shipment %}
+    <div class="row justify-content-center">
+        {% for item in track_shipment %}
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 text-center">
+
+                    <img src="{{ item.product.imageURL }}" class="card-img-top img-fluid" "
+                        style=" max-height: 150px; object-fit: contain; padding: 10px;">
+
+                    <!-- Product Name -->
+                    <h5 class="card-title mb-3">{{ item.product.name }}</h5>
+
+                    <!-- Customer Name -->
+                    <p class="text-muted mb-2"><strong>Seller:</strong> {{ item.seller.name }}</p>
+                    <p class="text-muted mb-2"><strong>Address: {{ item.address }}</strong>
+                    <p class="text-muted mb-2"><strong>Quantity: {{ item.quantity }}</strong>
+                    </p>
+                    </p>
+                    </p>
+
+                    <!-- Order Status -->
+                    <p class="text-muted mb-2"><strong>Status:</strong> {{ item.shipmentstatus }}</p>
+
+                
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">There is no Product.</div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -51,13 +51,18 @@
           <ul class="dropdown-menu" aria-labelledby="superMarketDropdown">
             <li><a class="dropdown-item" href="{% url 'upload_product' %}">Upload Product</a></li>
             <li><a class="dropdown-item" href="{% url 'product_detail' %}">Product Detail</a></li>
-            <li><a class="dropdown-item" href="#">Products3</a></li>
-            <li><a class="dropdown-item" href="#">Products4</a></li>
           </ul>
         </li>
         {% endif %}
+        
+        <li class="nav-item dropdown nav">
+          <a class="nav-link" href="{% url 'track_shipment' %}">
+            Track Shipmet
+          </a>
+        </li>
+
       </ul>
-   
+
       <div class="d-flex align-items-center">
         <!-- Search Form -->
         <form class="d-flex me-3">

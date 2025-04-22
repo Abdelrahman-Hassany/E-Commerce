@@ -2,36 +2,35 @@
 
 {% block content %}
 {% if request.user.is_authenticated and request.user.seller %}
+{% csrf_token %}
 <div class="container my-5">
     <h2 class="text-center mb-4">Order Details</h2>
     {% if order_status %}
     <div class="row justify-content-center">
         {% for item in order_status %}
-        <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="col-12 col-md-6 col-lg-4 mb-4" id="order-card-{{ item.id }}">
             <div class="card shadow-sm">
                 <div class="card-body p-4 text-center">
 
-                    <img src="{{ item.product.imageURL }}" class="card-img-top img-fluid" "
-                        style=" max-height: 150px; object-fit: contain; padding: 10px;">
+                    <img src="{{ item.product.imageURL }}" class="card-img-top img-fluid"
+                        style="max-height: 150px; object-fit: contain; padding: 10px;">
 
                     <!-- Product Name -->
                     <h5 class="card-title mb-3">{{ item.product.name }}</h5>
 
-                    <!-- Customer Name -->
+                    <!-- Customer Info -->
                     <p class="text-muted mb-2"><strong>Customer:</strong> {{ item.customer.name }}</p>
-                    <p class="text-muted mb-2"><strong>Address: {{ item.address }}</strong>
-                    <p class="text-muted mb-2"><strong>Quantity: {{ item.quantity }}</strong>
-                    </p>
-                    </p>
-                    </p>
+                    <p class="text-muted mb-2"><strong>Address:</strong> {{ item.address }}</p>
+                    <p class="text-muted mb-2"><strong>Quantity:</strong> {{ item.quantity }}</p>
 
                     <!-- Order Status -->
-                    <p class="text-muted mb-2"><strong>Status:</strong> {{ item.statuschoice }}</p>
+                    <p class="text-muted mb-2" id="status-{{ item.id }}"><strong>Status:</strong> {{ item.statuschoice}}</p>
 
-                    <!-- Action Button -->
-                    <a href="#" class="btn btn-primary btn-sm mt-3">Order processing</a>
-
-                    <!-- Action Button -->
+                    <!-- Action Buttons -->
+                    {% if item.statuschoice == 'pending' %}
+                    <button class="update-shipment btn btn-primary" data-id="{{ item.id }}">Confirm</button>
+                    {% endif %}
+                    <button class="cancel-shipment btn btn-danger" data-id="{{ item.id }}">Cancel</button>
 
                 </div>
             </div>
@@ -53,4 +52,60 @@
     </div>
 </div>
 {% endif %}
+
+<script>
+    const updateShipBtns = document.getElementsByClassName("update-shipment");
+    const cancelShipBtns = document.getElementsByClassName("cancel-shipment");
+
+    for (let i = 0; i < updateShipBtns.length; i++) {
+        updateShipBtns[i].addEventListener("click", function () {
+            const orderId = this.dataset.id;
+
+            fetch('/complete_order/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    action: 'confirm_shipment',
+                    order_ids: [parseInt(orderId)]
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log("✅ Shipment updated:", data);
+                    this.innerText = "Completed";
+                    this.remove();
+                    document.getElementById(`status-${orderId}`).innerText = "Status: complete";
+                });
+        });
+    }
+
+    for (let i = 0; i < cancelShipBtns.length; i++) {
+        cancelShipBtns[i].addEventListener("click", function () {
+            const orderId = this.dataset.id;
+
+            fetch('/complete_order/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    action: 'cancel',
+                    order_ids: [parseInt(orderId)]
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log("❌ Shipment canceled:", data);
+                    const card = document.getElementById(`order-card-${orderId}`);
+                    if (card) {
+                        card.remove();
+                    }
+                });
+        });
+    }
+</script>
 {% endblock %}
