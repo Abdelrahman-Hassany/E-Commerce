@@ -94,9 +94,9 @@ class OrderStatus(models.Model):
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    customer = models.ForeignKey('CoreAuth.Customer', on_delete=models.CASCADE)
+    customer = models.ForeignKey('CoreAuth.Customer', on_delete=models.SET_NULL,null=True,blank=True)
+    seller = models.ForeignKey('CoreAuth.Seller', on_delete=models.SET_NULL,null=True,blank=True)
     address = models.CharField(max_length=255)
-    seller = models.ForeignKey('CoreAuth.Seller', on_delete=models.CASCADE)
     statuschoice = models.CharField(max_length=10, choices=StatusChoice.choices, default=StatusChoice.PENDING)
     date_updated = models.DateTimeField(auto_now=True)
     quantity = models.IntegerField(null=True,blank=True)
@@ -117,8 +117,8 @@ class TrackShipment(models.Model):
         PENDING = 'pending', 'Pending'
         PREPARED = 'prepared', 'Prepared'
         CANCELED = 'canceled' , 'Canceled'
-    seller = models.ForeignKey('CoreAuth.Seller', on_delete=models.CASCADE,null=True,blank=True)
-    customer = models.ForeignKey('CoreAuth.Customer', on_delete=models.CASCADE,null=True,blank=True)
+    seller = models.ForeignKey('CoreAuth.Seller', on_delete=models.SET_NULL,null=True,blank=True)
+    customer = models.ForeignKey('CoreAuth.Customer', on_delete=models.SET_NULL,null=True,blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     address = models.CharField(max_length=255)

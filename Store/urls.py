@@ -1,6 +1,9 @@
 from django.urls import path
 from .views import store,cart,cheackout,updatecart,processOrder,upload_product_view,product_detail,complete_order,trackShipment
+from django.conf import settings
+from django.conf.urls.static import static
 
+ 
 urlpatterns = [
     path('',store,name='store'),
     path('upload_product/',upload_product_view,name='upload_product'),
@@ -13,3 +16,6 @@ urlpatterns = [
     path('track_shipment/', trackShipment,name='track_shipment'),
 
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                            document_root=settings.MEDIA_ROOT)

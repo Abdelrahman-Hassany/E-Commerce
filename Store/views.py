@@ -234,14 +234,18 @@ def processOrder(request):
 
         order_status, create = OrderStatus.objects.get_or_create(**order_status_data)
 
-        TrackShipment.objects.get_or_create(
-            product=order_item.product,
-            quantity=order_item.quantity,
-            address=data["form"]["address"],
-            customer = customer or seller,
-            seller=order_item.product.seller,
-            orderstatus=order_status,
-        )
+        track_shipment_data = {
+            "product": order_item.product,
+            "quantity": order_item.quantity,
+            "address": data["form"]["address"],
+            "seller": order_item.product.seller,
+            "orderstatus": order_status,
+        }
+
+        if customer:
+            track_shipment_data["customer"] = customer
+
+        TrackShipment.objects.get_or_create(**track_shipment_data)
 
     if customer:
         ShippingAddress.objects.create(

@@ -12,8 +12,9 @@
         <li class="nav-item active">
           <a class="nav-link nav" href="{% url 'store' %}">Home</a>
         </li>
+        <!-- 
+        // Electronics Dropdown 
 
-        <!-- Electronics Dropdown -->
         <li class="nav-item dropdown nav">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
@@ -28,7 +29,7 @@
           </ul>
         </li>
 
-        <!-- SuperMarket Dropdown -->
+       // SuperMarket Dropdown
         <li class="nav-item dropdown nav">
           <a class="nav-link dropdown-toggle" href="#" id="superMarketDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
@@ -41,6 +42,8 @@
             <li><a class="dropdown-item" href="#">Products4</a></li>
           </ul>
         </li>
+        -->
+        
         <!-- Seller Page -->
         {% if request.user.is_authenticated and request.user.seller %}
         <li class="nav-item dropdown nav">
@@ -54,7 +57,7 @@
           </ul>
         </li>
         {% endif %}
-        
+
         <li class="nav-item dropdown nav">
           <a class="nav-link" href="{% url 'track_shipment' %}">
             Track Shipmet
