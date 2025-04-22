@@ -8,9 +8,10 @@ django = "*"
 pillow = "*"
 faker = "*"
 sweetify = "*"
-mysqlclient = "*"
 black = "*"
 python-dotenv = "*"
+psycopg2-binary = "*"
+dj-database-url = "*"
 
 [dev-packages]
 black = "*"
