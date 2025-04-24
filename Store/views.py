@@ -67,7 +67,6 @@ def cart(request):
     context = {"items": items, "order": order}
     return render(request, "store/cart.html", context)
 
-
 def cheackout(request):
     data = cartData(request)
     items = data["items"]

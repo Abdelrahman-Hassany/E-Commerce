@@ -121,7 +121,6 @@
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
                 cart = {}
                 document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
                 window.location.href = "/"

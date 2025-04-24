@@ -30,8 +30,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "default-secret")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://e-commerce-production-305d.up.railway.app']
+ALLOWED_HOSTS = []
+#CSRF_TRUSTED_ORIGINS = ['https://e-commerce-production-305d.up.railway.app']
 
 # Application definition
 
@@ -82,7 +82,14 @@ WSGI_APPLICATION = 'Ecommerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+    'default':{ 
+            'ENGINE': 'django.db.backends.postgresql',            
+            'NAME':os.environ.get('DB_NAME'),
+            'USER':os.environ.get('DB_USER'),
+            'PASSWORD':os.environ.get('DB_PASSWORD'),
+            'HOST':os.environ.get('DB_HOST'),
+            'PORT':os.environ.get('DB_PORT'),
+        }
 }
 
 
@@ -121,6 +128,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'

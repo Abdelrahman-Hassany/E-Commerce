@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.decorators import login_required
 from .form import RegistrationForm
+from django.contrib import messages
 
 
 #registration view, Handles user registration using a form
@@ -10,6 +11,7 @@ def registration_view(request):
         form =RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            messages.success(request,'register success')
             login(request,user)
             return redirect('store')
     else:
@@ -27,6 +29,7 @@ def login_view(request):
         
         if user is not None:
             login(request,user)
+            
             return redirect('store')
         else:
             error_message = "invalid credentials"
